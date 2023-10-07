@@ -1,47 +1,35 @@
 class Solution {
-    public List<Integer> majorityElement(int[] nums) {
-        int num1 = 0;
-        int num2 = 0;
-        int count1 = 0;
-        int count2 = 0;
+ public:
+  vector<int> majorityElement(vector<int>& nums) {
+    vector<int> ans;
+    int candidate1 = 0;
+    int candidate2 = 1;   // Any number different from candidate1
+    int countSoFar1 = 0;  // # of candidate1 so far
+    int countSoFar2 = 0;  // # of candidate2 so far
 
-        for(int i = 0; i < nums.length; i++){
-            if(nums[i] == num1){
-                count1++;
-            } else if (nums[i] == num2){
-                count2++;
-            } else if (count1 == 0){
-                num1 = nums[i];
-                count1 = 1;
-            } else if (count2 == 0){
-                num2 = nums[i];
-                count2 = 1;
-            } else {
-                count1--;
-                count2--;
-            }
-        }
+    for (const int num : nums)
+      if (num == candidate1) {
+        ++countSoFar1;
+      } else if (num == candidate2) {
+        ++countSoFar2;
+      } else if (countSoFar1 == 0) {  // Assign new candidate
+        candidate1 = num;
+        ++countSoFar1;
+      } else if (countSoFar2 == 0) {  // Assign new candidate
+        candidate2 = num;
+        ++countSoFar2;
+      } else {  // Meet a new number, so pair out previous counts
+        --countSoFar1;
+        --countSoFar2;
+      }
 
-        count1 = 0;
-        count2 = 0;
-        for(int num : nums){
-            if(num == num1){
-                count1++;
-            } else if(num == num2){
-                count2++;
-            }
-        }
+    const int count1 = count(nums.begin(), nums.end(), candidate1);
+    const int count2 = count(nums.begin(), nums.end(), candidate2);
 
-        List<Integer> res = new ArrayList<>();
-
-        if(count1 > nums.length / 3){
-            res.add(num1);
-        }
-
-        if(count2 > nums.length / 3){
-            res.add(num2);
-        }
-
-        return res;
-    }
-}
+    if (count1 > nums.size() / 3)
+      ans.push_back(candidate1);
+    if (count2 > nums.size() / 3)
+      ans.push_back(candidate2);
+    return ans;
+  }
+};
